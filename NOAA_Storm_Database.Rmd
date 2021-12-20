@@ -1,0 +1,52 @@
+---
+title: "NOAA Storm Database"
+author: "David Wong"
+date: "12/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(vroom)
+library(ggplot2)
+library(dplyr)
+```
+
+
+
+```{r}
+raw <- vroom("repdata_data_StormData.csv.bz2")
+```
+
+```{r}
+fatal <- raw %>%
+  group_by(EVTYPE) %>%
+  summarise(fatalities = sum(FATALITIES, na.rm = T)) %>%
+  arrange(desc(fatalities)) %>%
+  top_n(10) %>%
+  arrange(fatalities)
+
+fatal$EVTYPE <- factor(fatal$EVTYPE, levels=fatal$EVTYPE)
+
+ggplot(data=fatal, aes(x=fatalities, y=EVTYPE)) + geom_bar(stat="identity")
+```
+
+
+
+```{r}
+table(raw$PROPDMGEXP)
+table(raw$CROPDMGEXP)
+
+damage <- raw %>%
+  group_by(EVTYPE) %>%
+  summarise(damages = sum(PROPDMG + CROPDMG, na.rm = T)) %>%
+  arrange(desc(damages)) %>%
+  top_n(10) %>%
+  arrange(damages)
+
+damage$EVTYPE <- factor(damage$EVTYPE, levels=damage$EVTYPE)
+
+ggplot(data=damage, aes(x=damages, y=EVTYPE)) + geom_bar(stat="identity")
+```
+
+
