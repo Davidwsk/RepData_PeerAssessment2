@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/848881/9654b602723a432c8170b968a49df44a
+bundleId: https://api.rpubs.com/api/v1/document/848881/9654b602723a432c8170b968a49df44a
+url: http://rpubs.com/davidwsk/848881
+when: 1640057186.75316
+lastSyncTime: 1640057186.75316

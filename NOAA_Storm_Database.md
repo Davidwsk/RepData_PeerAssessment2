@@ -12,22 +12,37 @@ This report analyse NOAA Storm Database to find out the Top 10 Event Types for t
 - costly (greatest economic consequences)  
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(vroom)
-library(ggplot2)
-library(dplyr)
-```
+
 
 
 ## Load raw data
-```{r, cache = TRUE}
+
+```r
 raw <- vroom("repdata_data_StormData.csv.bz2")
+```
+
+```
+## Rows: 902297 Columns: 37
+```
+
+```
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (18): BGN_DATE, BGN_TIME, TIME_ZONE, COUNTYNAME, STATE, EVTYPE, BGN_AZI,...
+## dbl (18): STATE__, COUNTY, BGN_RANGE, COUNTY_END, END_RANGE, LENGTH, WIDTH, ...
+## lgl  (1): COUNTYENDN
+```
+
+```
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 
 ## Data Processing
 ### Top 10 Fatal Event Types
-```{r, cache = TRUE}
+
+```r
 fatal <- raw %>%
   group_by(EVTYPE) %>%
   summarise(fatalities = sum(FATALITIES, na.rm = T)) %>%
@@ -40,7 +55,8 @@ Data transformations:
 - sum __FATALITIES__ into __fatalities__
 
 ### Top 10 Costly Event Types
-```{r, cache = TRUE}
+
+```r
 exp_tbl <- c("k" = 0.001, "m" = 1, "b" = 1000, "K" = 0.001, "M" = 1, "B" = 1000)
 
 damage <- raw %>%
@@ -59,19 +75,23 @@ Data transformations:
 
 ## Results
 ### Top 10 Fatal Event Types
-```{r}
+
+```r
 ggplot(data=fatal, aes(x=fatalities, y=EVTYPE)) +
   ylab("Event Types") +
   labs(title="Top 10 Fatal Event Types") +
   geom_bar(stat="identity")
 ```
 
-The __`r fatal[10,"EVTYPE"]`__ is the most harmful with respect to population
-health with __`r fatal[10,"fatalities"]`__ fatalities.  
-Followed by __`r paste(as.character(fatal[9:1,]$EVTYPE), collapse=", ")`__.
+![](NOAA_Storm_Database_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+The __TORNADO__ is the most harmful with respect to population
+health with __5633__ fatalities.  
+Followed by __EXCESSIVE HEAT, FLASH FLOOD, HEAT, LIGHTNING, TSTM WIND, FLOOD, RIP CURRENT, HIGH WIND, AVALANCHE__.
 
 ### Top 10 Costly Event Types
-```{r}
+
+```r
 ggplot(data=damage, aes(x=damages, y=EVTYPE)) + 
   xlab("damages (million USD)") +
   ylab("Event Types") +
@@ -79,6 +99,8 @@ ggplot(data=damage, aes(x=damages, y=EVTYPE)) +
   geom_bar(stat="identity")
 ```
 
-The __`r damage[10,"EVTYPE"]`__ has the greatest economic consequences which
-costed __`r format(as.numeric(damage[10,"damages"]))`__ million USD.  
-Followed by __`r paste(as.character(damage[9:1,]$EVTYPE), collapse=", ")`__.
+![](NOAA_Storm_Database_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+The __FLOOD__ has the greatest economic consequences which
+costed __150319.7__ million USD.  
+Followed by __HURRICANE/TYPHOON, TORNADO, STORM SURGE, HAIL, FLASH FLOOD, DROUGHT, HURRICANE, RIVER FLOOD, ICE STORM__.
